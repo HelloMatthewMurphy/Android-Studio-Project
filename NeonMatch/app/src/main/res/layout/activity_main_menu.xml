@@ -15,12 +15,12 @@
         android:scaleType="fitCenter"
         android:background="@null"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="59dp"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.518"
+        app:layout_constraintHorizontal_bias="0.0"
         android:onClick="openPlayActivity"/>
 
     <ImageButton
