@@ -26,6 +26,10 @@ public class PlayScreen extends AppCompatActivity {
         setContentView(R.layout.activity_play_screen);
     }
 
+    public void main(String args[]){
+
+    }
+
     public void redPressed(){
         red = true;
         TextView tv = (TextView)findViewById(R.id.textView);

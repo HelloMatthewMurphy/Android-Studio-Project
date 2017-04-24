@@ -22,6 +22,11 @@ public class MainMenu extends AppCompatActivity {
         Intent intent = new Intent(MainMenu.this, PlayScreen.class);
         startActivity(intent);
     }
+
+    public void openLeaderboardActivity(View view) {
+        Intent intent = new Intent(MainMenu.this, LeaderboardScreen.class);
+        startActivity(intent);
+    }
     public void exitApp(View view) {
         System.exit(0);
     }
