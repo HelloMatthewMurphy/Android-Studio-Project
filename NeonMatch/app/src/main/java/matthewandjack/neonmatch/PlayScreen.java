@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.media.MediaPlayer;
 
 import java.util.Random;
 
@@ -27,6 +28,7 @@ public class PlayScreen extends AppCompatActivity {
     private int score = 0;
     private long timeTellNewColor = 5;
     private long lastTime = 0;
+    private int [] balls = {0, 0, 0};
     private int [] ballImages = {R.drawable.red, R.drawable.blue, R.drawable.green, R.drawable.yellow};
     private int currentBall = 0;
     //public Button redButton = (Button)findViewById(R.id.redButton);
@@ -41,11 +43,13 @@ public class PlayScreen extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_play_screen);
 
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.tap);
         final ImageButton redButton = (ImageButton) findViewById(R.id.redButton);
         redButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(PlayScreen.this, "RED", Toast.LENGTH_LONG).show();
-                if(currentBall == 0) {
+                mp.start();
+                if(balls [0] == 0) {
                     score++;
                     updateScore();
                     changeBall();
@@ -56,7 +60,8 @@ public class PlayScreen extends AppCompatActivity {
         blueButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(PlayScreen.this, "BLUE", Toast.LENGTH_LONG).show();
-                if(currentBall == 1) {
+                mp.start();
+                if(balls [0] == 1) {
                     score++;
                     updateScore();
                     changeBall();
@@ -67,7 +72,8 @@ public class PlayScreen extends AppCompatActivity {
         greenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(PlayScreen.this, "GREEN", Toast.LENGTH_LONG).show();
-                if(currentBall == 2) {
+                mp.start();
+                if(balls [0] == 2) {
                     score++;
                     updateScore();
                     changeBall();
@@ -78,7 +84,9 @@ public class PlayScreen extends AppCompatActivity {
         yellowButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(PlayScreen.this, "YELLOW", Toast.LENGTH_LONG).show();
-                if(currentBall == 3) {
+                mp.start();
+
+                if(balls [0] == 3) {
                     score++;
                     updateScore();
                     changeBall();
@@ -90,10 +98,17 @@ public class PlayScreen extends AppCompatActivity {
             TextView timeText = (TextView)findViewById(R.id.timeText);
             public void onTick(long elapsedTime) {
                 timeText.setText("Time: " + elapsedTime / 1000);
-                if(elapsedTime - lastTime >= timeTellNewColor) {
-                    changeBall();
-                    lastTime = elapsedTime;
-                }
+                /*new CountDownTimer(3000, 1000) {
+                    @Override
+                    public void onTick(long l) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        changeBall();
+                    }
+                }.start();*/
             }
         }.start();
     }
@@ -105,9 +120,15 @@ public class PlayScreen extends AppCompatActivity {
 
     private void changeBall(){
         Random randNum = new Random();
-        ImageView ballImage = (ImageView)findViewById(R.id.ball);
-        currentBall = randNum.nextInt(4);
-        ballImage.setImageResource(ballImages[currentBall]);
+        ImageView ball3Image = (ImageView)findViewById(R.id.ball3);
+        ImageView ball2Image = (ImageView)findViewById(R.id.ball2);
+        ImageView ball1Image = (ImageView)findViewById(R.id.ball1);
+        balls [0] = balls [1];
+        balls [1] = balls [2];
+        balls [2] = randNum.nextInt(4);
+        ball1Image.setImageResource(ballImages[balls [0]]);
+        ball2Image.setImageResource(ballImages[balls [1]]);
+        ball3Image.setImageResource(ballImages[balls [2]]);
     }
 
 }
