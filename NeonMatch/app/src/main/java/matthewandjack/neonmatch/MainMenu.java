@@ -1,11 +1,14 @@
 package matthewandjack.neonmatch;
 import android.content.Intent;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.util.List;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -24,9 +27,40 @@ public class MainMenu extends AppCompatActivity {
     }
 
     public void openLeaderboardActivity(View view) {
-        Intent intent = new Intent(MainMenu.this, LeaderboardScreen.class);
-        startActivity(intent);
+        //Displays leaderboard method
+        DBHandler db = new DBHandler(this);
+
+        //Inserting Players
+        db.addPlayer(new Player(1 , 1234, "LOL"));
+        db.addPlayer(new Player(2 , 1000, "ABC"));
+        db.addPlayer(new Player(3 , 950, "MAT"));
+        db.addPlayer(new Player(4 , 900, "BRI"));
+        db.addPlayer(new Player(5 , 800, "SOM"));
+        db.addPlayer(new Player(6 , 775, "JAK"));
+        db.addPlayer(new Player(7 , 750, "HAH"));
+        db.addPlayer(new Player(8 , 700, "LAD"));
+        db.addPlayer(new Player(9 , 660, "KUL"));
+        db.addPlayer(new Player(10 , 630, "DAN"));
+
+        //Reading all shops
+        List<Player> players = db.getAllPlayers();
+
+        String result = "";
+        for(int j = 0; j < players.size(); j++){
+            result += "Rank:    1\n" + " Name: " + players.get(j).getName() + "\n" + "Score:  " + players.get(j).getScore() + "\n\n";
+        }
+
+        displayMessage("Leaderboards", result);
     }
+
+    public void displayMessage(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
+    }
+
     public void exitApp(View view) {
         System.exit(0);
     }
