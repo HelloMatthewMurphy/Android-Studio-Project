@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="matthewandjack.neonmatch.PlayScreen"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="@drawable/gamelevel">
 
     <!---android:background="@drawable/level"-->
 
