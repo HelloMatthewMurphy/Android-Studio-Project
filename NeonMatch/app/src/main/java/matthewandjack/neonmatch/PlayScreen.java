@@ -75,60 +75,69 @@ public class PlayScreen extends AppCompatActivity {
             ballImageViews.get(i).setImageResource(ballImageViewsColor.get(i));
         }
 
-        final MediaPlayer tap = MediaPlayer.create(this, R.raw.tap);
+        final MediaPlayer tap = MediaPlayer.create(this, R.raw.tap8);
+        final MediaPlayer miss = MediaPlayer.create(this, R.raw.tap6);
         final MediaPlayer backgroundMusic = MediaPlayer.create(this, R.raw.backgroundmusic);
         backgroundMusic.start();
         backgroundMusic.setLooping(true);
         final ImageButton redButton = (ImageButton) findViewById(R.id.redButton);
         redButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                tap.start();
                 if(ballImageViewsColor.get(currentBall) == ballImages[0]) {
+                    tap.start();
                     score += 10;
                     updateScore();
                     changeBall();
                 }
-                else
+                else {
                     playerHearts--;
+                    miss.start();
+                }
             }
         });
         final ImageButton blueButton = (ImageButton) findViewById(R.id.blueButton);
         blueButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                tap.start();
                 if(ballImageViewsColor.get(currentBall) == ballImages[1]) {
+                    tap.start();
                     score += 10;
                     updateScore();
                     changeBall();
                 }
-                else
+                else {
                     playerHearts--;
+                    miss.start();
+                }
             }
         });
         final ImageButton greenButton = (ImageButton) findViewById(R.id.greenButton);
         greenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                tap.start();
                 if(ballImageViewsColor.get(currentBall) == ballImages[2]) {
+                    tap.start();
                     score += 10;
                     updateScore();
                     changeBall();
                 }
-                else
+                else {
                     playerHearts--;
+                    miss.start();
+                }
             }
         });
         final ImageButton yellowButton = (ImageButton) findViewById(R.id.yellowButton);
         yellowButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                tap.start();
                 if(ballImageViewsColor.get(currentBall) == ballImages[3]) {
+                    tap.start();
                     score += 10;
                     updateScore();
                     changeBall();
                 }
-                else
+                else {
                     playerHearts--;
+                    miss.start();
+                }
             }
         });
 
@@ -264,12 +273,12 @@ public class PlayScreen extends AppCompatActivity {
             } else
                 ballImageViews.get(i).setY(0xffffff38);
         }
-        /*
+
         if (playerHearts <= 0) {
             playerHearts = 0;
             gameOver = true;
             popUp();
-        }*/
+        }
     }
 
     @Override

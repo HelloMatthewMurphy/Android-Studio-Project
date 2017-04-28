@@ -24,15 +24,8 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
 
         final MediaPlayer backgroundMusic = MediaPlayer.create(this, R.raw.backgroundmusic);
-
-        final ImageButton splashScreen = (ImageButton) findViewById(R.id.splashScreen);
-        splashScreen.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                splashScreen.setX(2000);
-                backgroundMusic.start();
-                backgroundMusic.setLooping(true);
-            }
-        });
+        backgroundMusic.start();
+        backgroundMusic.setLooping(true);
     }
 
     public void openPlayActivity(View view) {
@@ -43,19 +36,19 @@ public class MainMenu extends AppCompatActivity {
     public void openLeaderboardActivity(View view) {
         //Displays leaderboard method
         DBHandler db = new DBHandler(this);
-
-        //Inserting Players
-        db.addPlayer(new Player(1 , 1234, "LOL"));
-        db.addPlayer(new Player(2 , 1000, "ABC"));
-        db.addPlayer(new Player(3 , 950, "MAT"));
-        db.addPlayer(new Player(4 , 900, "BRI"));
-        db.addPlayer(new Player(5 , 800, "SOM"));
-        db.addPlayer(new Player(6 , 775, "JAK"));
-        db.addPlayer(new Player(7 , 750, "HAH"));
-        db.addPlayer(new Player(8 , 700, "LAD"));
-        db.addPlayer(new Player(9 , 660, "KUL"));
-        db.addPlayer(new Player(10 , 630, "DAN"));
-
+        if(!(db.checkDatabase())) {
+            //Inserting Players
+            db.addPlayer(new Player(1, 1234, "LOL"));
+            db.addPlayer(new Player(2, 1000, "ABC"));
+            db.addPlayer(new Player(3, 950, "MAT"));
+            db.addPlayer(new Player(4, 900, "BRI"));
+            db.addPlayer(new Player(5, 800, "SOM"));
+            db.addPlayer(new Player(6, 775, "JAK"));
+            db.addPlayer(new Player(7, 750, "HAH"));
+            db.addPlayer(new Player(8, 700, "LAD"));
+            db.addPlayer(new Player(9, 660, "KUL"));
+            db.addPlayer(new Player(10, 420, "DAN"));
+        }
         //Reading all shops
         List<Player> players = db.getAllPlayers();
 

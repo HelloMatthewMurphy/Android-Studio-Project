@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
@@ -26,9 +27,11 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_SCORE = "score";
+    private static String databasePath = "";
 
     public DBHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        databasePath = context.getDatabasePath(DATABASE_NAME).getPath();
     }
     @Override
     public void onCreate(SQLiteDatabase db){
@@ -68,6 +71,20 @@ public class DBHandler extends SQLiteOpenHelper {
         return pID;
     }
 
+    public boolean checkDatabase() {
+        SQLiteDatabase checkDB = null;
+        try {
+            checkDB = SQLiteDatabase.openDatabase(databasePath, null, SQLiteDatabase.OPEN_READONLY);
+        } catch (SQLiteException e) {
+            //database doesn't exist yet
+        }
+
+        if (checkDB != null) {
+            checkDB.close();
+        }
+
+        return checkDB != null ? true : false;
+    }
     //Getting All PLayers
     public List<Player> getAllPlayers(){
         List<Player>playerList = new ArrayList<Player>();
