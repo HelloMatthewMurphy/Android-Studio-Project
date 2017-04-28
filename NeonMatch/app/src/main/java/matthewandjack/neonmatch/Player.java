@@ -11,7 +11,7 @@ public class Player {
     public Player() {
 
     }
-    public Player(int id, int Score, String name) {
+    public Player(int id, int score, String name) {
         this.id = id;
         this.score = score;
         this.name = name;

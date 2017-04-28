@@ -1,5 +1,6 @@
 package matthewandjack.neonmatch;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import java.util.List;
 
@@ -19,6 +22,17 @@ public class MainMenu extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main_menu);
+
+        final MediaPlayer backgroundMusic = MediaPlayer.create(this, R.raw.backgroundmusic);
+
+        final ImageButton splashScreen = (ImageButton) findViewById(R.id.splashScreen);
+        splashScreen.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                splashScreen.setX(2000);
+                backgroundMusic.start();
+                backgroundMusic.setLooping(true);
+            }
+        });
     }
 
     public void openPlayActivity(View view) {
@@ -47,7 +61,7 @@ public class MainMenu extends AppCompatActivity {
 
         String result = "";
         for(int j = 0; j < players.size(); j++){
-            result += "Rank:    1\n" + " Name: " + players.get(j).getName() + "\n" + "Score:  " + players.get(j).getScore() + "\n\n";
+            result += "Rank:   " + (j+1) + "\nName: " + players.get(j).getName() + "\n" + "Score:  " + players.get(j).getScore() + "\n\n";
         }
 
         displayMessage("Leaderboards", result);
