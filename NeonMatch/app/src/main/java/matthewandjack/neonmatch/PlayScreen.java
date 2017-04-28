@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -28,6 +29,7 @@ import java.util.Random;
 
 public class PlayScreen extends AppCompatActivity {
     private int speed = 9;
+    private int timeBetweenBalls = 100;
     private int score = 0;
     private int currentBall = 0;
     private int lastBallActive = 0;
@@ -38,6 +40,7 @@ public class PlayScreen extends AppCompatActivity {
     private ArrayList<Boolean> ballImageViewsActive = new ArrayList<Boolean>();
     private ArrayList<Integer> ballImageViewsColor = new ArrayList<Integer>();
     private boolean gameOver = false;
+    private boolean waiting = false;
 
 
     @Override
@@ -66,7 +69,6 @@ public class PlayScreen extends AppCompatActivity {
         ballImageViews.add((ImageView)findViewById(R.id.ball15));
 
         Random randNum = new Random();
-
         for(int i = 0; i < ballImageViews.size(); i++) {
             ballImageViewsActive.add(false);
             ballImageViewsColor.add(ballImages[randNum.nextInt(4)]);
@@ -139,31 +141,38 @@ public class PlayScreen extends AppCompatActivity {
                     time++;
                     timeText.setText("Time: " + time);
                     heartsText.setText("Hearts: " + playerHearts);
-
-                    if (playerHearts <= 0) {
-                        gameOver = true;
-                        popUp();
-                    }
                 }
             }
         }.start();
 
         //Spawning balls timer
         new CountUpTimer(1000) {
-            TextView timeText = (TextView)findViewById(R.id.timeText);
             public void onTick(long elapsedTime) {
                 if(!gameOver) {
-                    if (lastBallActive >= ballImageViews.size())
-                        lastBallActive = 0;
-                    ballImageViewsActive.set(lastBallActive, true);
-                    lastBallActive++;
+                    if(!waiting) {
+
+                        new CountDownTimer(timeBetweenBalls , 1000) {
+                            @Override
+                            public void onTick(long l) {
+                                waiting = true;
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                waiting = false;
+                                if (lastBallActive >= ballImageViews.size())
+                                    lastBallActive = 0;
+                                ballImageViewsActive.set(lastBallActive, true);
+                                lastBallActive++;
+                            }
+                        }.start();
+                    }
                 }
             }
         }.start();
 
         //Moving balls timer
         new CountUpTimer(33) {
-            TextView timeText = (TextView)findViewById(R.id.timeText);
             public void onTick(long elapsedTime) {
                 if(!gameOver)
                     moveBalls();
@@ -206,15 +215,17 @@ public class PlayScreen extends AppCompatActivity {
 
     private void changeBall(){
         Random randNum = new Random();
-        ballImageViews.get(currentBall).setImageResource(ballImages[randNum.nextInt(4)]);
         ballImageViewsActive.set(currentBall, false);
+        int ranNum = randNum.nextInt(4);
+        ballImageViews.get(currentBall).setImageResource(ballImages[ranNum]);
+        ballImageViewsColor.set(currentBall, ballImages[ranNum]);
         updateCurrentBall();
     }
 
     private void updateCurrentBall() {
         currentBall++;
-        if(currentBall >= ballImageViews.size())
-            currentBall = 1;
+        if(currentBall >= 15)
+            currentBall = 0;
     }
 
     private void moveBalls(){
@@ -223,22 +234,24 @@ public class PlayScreen extends AppCompatActivity {
         display.getSize(size);
 
         TextView debugText = (TextView)findViewById(R.id.debugInfo);
-        debugText.setText("Ball 1 " + ballImageViewsActive.get(0) +
-                "\nBall 2 " + ballImageViewsActive.get(1) +
-                "\nBall 3 " + ballImageViewsActive.get(2) +
-                "\nBall 4 " + ballImageViewsActive.get(3) +
-                "\nBall 5 " + ballImageViewsActive.get(4) +
-                "\nBall 6 " + ballImageViewsActive.get(5) +
-                "\nBall 7 " + ballImageViewsActive.get(6) +
-                "\nBall 8 " + ballImageViewsActive.get(7) +
-                "\nBall 9 " + ballImageViewsActive.get(8) +
-                "\nBall 10 " + ballImageViewsActive.get(9) +
-                "\nBall 11 " + ballImageViewsActive.get(10) +
-                "\nBall 12 " + ballImageViewsActive.get(11) +
-                "\nBall 13 " + ballImageViewsActive.get(12) +
-                "\nBall 14 " + ballImageViewsActive.get(13) +
-                "\nBall 15 " + ballImageViewsActive.get(14) +
-                "\nSpeed: " + speed + "\nCurrent ball: " + currentBall);
+        debugText.setText(" ");
+
+        debugText.setText("Ball 1 " + ballImageViewsActive.get(0) + " " + ballImageViews.get(0).getY() +
+                "\nBall 2 " + ballImageViewsActive.get(1) + " " + ballImageViews.get(1).getY() +
+                "\nBall 3 " + ballImageViewsActive.get(2) + " " + ballImageViews.get(2).getY() +
+                "\nBall 4 " + ballImageViewsActive.get(3) + " " + ballImageViews.get(3).getY() +
+                "\nBall 5 " + ballImageViewsActive.get(4) + " " + ballImageViews.get(4).getY() +
+                "\nBall 6 " + ballImageViewsActive.get(5) + " " + ballImageViews.get(5).getY() +
+                "\nBall 7 " + ballImageViewsActive.get(6) + " " + ballImageViews.get(6).getY() +
+                "\nBall 8 " + ballImageViewsActive.get(7) + " " + ballImageViews.get(7).getY() +
+                "\nBall 9 " + ballImageViewsActive.get(8) + " " + ballImageViews.get(8).getY() +
+                "\nBall 10 " + ballImageViewsActive.get(9) + " " + ballImageViews.get(9).getY() +
+                "\nBall 11 " + ballImageViewsActive.get(10) + " " + ballImageViews.get(10).getY() +
+                "\nBall 12 " + ballImageViewsActive.get(11) + " " + ballImageViews.get(11).getY() +
+                "\nBall 13 " + ballImageViewsActive.get(12) + " " + ballImageViews.get(12).getY() +
+                "\nBall 14 " + ballImageViewsActive.get(13) + " " + ballImageViews.get(13).getY() +
+                "\nBall 15 " + ballImageViewsActive.get(14) + " " + ballImageViews.get(14).getY() +
+                "\nSpeed: " + speed + "\nCurrent ball: " + (currentBall+1));
 
         for (int i = 0; i < ballImageViews.size(); i++) {
             if (ballImageViewsActive.get(i)) {
@@ -251,6 +264,12 @@ public class PlayScreen extends AppCompatActivity {
             } else
                 ballImageViews.get(i).setY(0xffffff38);
         }
+        /*
+        if (playerHearts <= 0) {
+            playerHearts = 0;
+            gameOver = true;
+            popUp();
+        }*/
     }
 
     @Override

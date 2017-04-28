@@ -21,7 +21,9 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintHorizontal_bias="0.518"
-        android:onClick="openPlayActivity"/>
+        android:onClick="openPlayActivity"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <ImageButton
         android:id="@+id/imageButton3"
@@ -40,7 +42,9 @@
         app:layout_constraintTop_toBottomOf="@+id/imageButton"
         android:onClick="exitApp"
         app:layout_constraintVertical_bias="0.493"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton4" />
+        app:layout_constraintBottom_toTopOf="@+id/imageButton4"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp" />
 
     <ImageButton
         android:id="@+id/imageButton4"
@@ -59,13 +63,15 @@
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/imageButton"
         android:onClick="openLeaderboardActivity"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp" />
 
     <ImageButton
         android:id="@+id/splashScreen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:srcCompat="@android:drawable/checkbox_on_background"
+        android:layout_width="3000dp"
+        android:layout_height="580dp"
+        app:srcCompat="@drawable/splashscreen"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,6 +79,10 @@
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="fitCenter"
+        android:background="@null" />
 
 </android.support.constraint.ConstraintLayout>
