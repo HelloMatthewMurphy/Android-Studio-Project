@@ -57,6 +57,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.insert(TABLE_PLAYER, null, values);
         db.close(); // Closing database connection
     }
+/*
     // Getting one player
     public Player getPlayer(int id){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -70,7 +71,35 @@ public class DBHandler extends SQLiteOpenHelper {
         // return player
         return pID;
     }
+*/
+public int getPlayerMaxID(){
+    String selectQuery = "SELECT * FROM " + TABLE_PLAYER + " WHERE " + KEY_ID + " = ( SELECT MAX(" + KEY_ID + ") FROM " + TABLE_PLAYER + ")";
 
+    SQLiteDatabase db = this.getWritableDatabase();
+    Cursor cursor = db.rawQuery(selectQuery, null);
+
+    if (cursor != null)
+        cursor.moveToFirst();
+    Player pID = new Player(Integer.parseInt(cursor.getString(0)),
+            Integer.parseInt(cursor.getString(2)), cursor.getString(1));
+    // return player
+    return pID.getId();
+}
+/*
+    public Player getPlayerMinScore(){
+        String selectQuery = "SELECT * FROM " + TABLE_PLAYER + " WHERE " + TABLE_PLAYER + " = ( SELECT MIN(" + KEY_SCORE + ") FROM " + TABLE_PLAYER + ")";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+        Player pID = new Player(Integer.parseInt(cursor.getString(0)),
+                Integer.parseInt(cursor.getString(1)), cursor.getString(2));
+        // return player
+        return pID;
+    }
+*/
     public boolean checkDatabase() {
         SQLiteDatabase checkDB = null;
         try {

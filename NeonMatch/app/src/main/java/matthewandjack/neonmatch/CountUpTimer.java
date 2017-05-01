@@ -12,6 +12,7 @@ public abstract class CountUpTimer {
 
     private final long interval;
     private long base;
+    private static final int MSG = 1;
 
     public CountUpTimer(long interval) {
         this.interval = interval;
@@ -22,19 +23,7 @@ public abstract class CountUpTimer {
         handler.sendMessage(handler.obtainMessage(MSG));
     }
 
-    public void stop() {
-        handler.removeMessages(MSG);
-    }
-
-    public void reset() {
-        synchronized (this) {
-            base = SystemClock.elapsedRealtime();
-        }
-    }
-
     abstract public void onTick(long elapsedTime);
-
-    private static final int MSG = 1;
 
     private Handler handler = new Handler() {
         @Override

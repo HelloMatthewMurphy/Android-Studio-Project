@@ -1,6 +1,7 @@
 package matthewandjack.neonmatch;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
+import android.text.InputFilter;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,8 +31,8 @@ import java.util.Random;
  */
 
 public class PlayScreen extends AppCompatActivity {
-    private int speed = 9;
-    private int timeBetweenBalls = 100;
+    private int speed = 15;
+    private int timeBetweenBalls = 700;
     private int score = 0;
     private int currentBall = 0;
     private int lastBallActive = 0;
@@ -41,6 +44,8 @@ public class PlayScreen extends AppCompatActivity {
     private ArrayList<Integer> ballImageViewsColor = new ArrayList<Integer>();
     private boolean gameOver = false;
     private boolean waiting = false;
+    private MediaPlayer backgroundMusic;
+    private boolean mute;
 
 
     @Override
@@ -50,6 +55,7 @@ public class PlayScreen extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_play_screen);
+        mute = ((MyApplication) this.getApplication()).getMute();
 
         //Adding all balls to array list
         ballImageViews.add((ImageView)findViewById(R.id.ball1));
@@ -77,21 +83,25 @@ public class PlayScreen extends AppCompatActivity {
 
         final MediaPlayer tap = MediaPlayer.create(this, R.raw.tap8);
         final MediaPlayer miss = MediaPlayer.create(this, R.raw.tap6);
-        final MediaPlayer backgroundMusic = MediaPlayer.create(this, R.raw.backgroundmusic);
-        backgroundMusic.start();
-        backgroundMusic.setLooping(true);
+        backgroundMusic = MediaPlayer.create(this, R.raw.backgroundmusic);
+        if(!mute) {
+            backgroundMusic.start();
+            backgroundMusic.setLooping(true);
+        }
         final ImageButton redButton = (ImageButton) findViewById(R.id.redButton);
         redButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(ballImageViewsColor.get(currentBall) == ballImages[0]) {
-                    tap.start();
+                    if(!mute)
+                        tap.start();
                     score += 10;
                     updateScore();
                     changeBall();
                 }
                 else {
                     playerHearts--;
-                    miss.start();
+                    if(!mute)
+                        miss.start();
                 }
             }
         });
@@ -99,14 +109,16 @@ public class PlayScreen extends AppCompatActivity {
         blueButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(ballImageViewsColor.get(currentBall) == ballImages[1]) {
-                    tap.start();
+                    if(!mute)
+                        tap.start();
                     score += 10;
                     updateScore();
                     changeBall();
                 }
                 else {
                     playerHearts--;
-                    miss.start();
+                    if(!mute)
+                        miss.start();
                 }
             }
         });
@@ -114,14 +126,16 @@ public class PlayScreen extends AppCompatActivity {
         greenButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(ballImageViewsColor.get(currentBall) == ballImages[2]) {
-                    tap.start();
+                    if(!mute)
+                        tap.start();
                     score += 10;
                     updateScore();
                     changeBall();
                 }
                 else {
                     playerHearts--;
-                    miss.start();
+                    if(!mute)
+                        miss.start();
                 }
             }
         });
@@ -129,14 +143,16 @@ public class PlayScreen extends AppCompatActivity {
         yellowButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(ballImageViewsColor.get(currentBall) == ballImages[3]) {
-                    tap.start();
+                    if(!mute)
+                        tap.start();
                     score += 10;
                     updateScore();
                     changeBall();
                 }
                 else {
                     playerHearts--;
-                    miss.start();
+                    if(!mute)
+                        miss.start();
                 }
             }
         });
@@ -144,23 +160,21 @@ public class PlayScreen extends AppCompatActivity {
         //Game time timer
         new CountUpTimer(1000) {
             TextView timeText = (TextView)findViewById(R.id.timeText);
-            TextView heartsText = (TextView)findViewById(R.id.heartstext);
+
             public void onTick(long elapsedTime) {
                 if(!gameOver) {
                     time++;
                     timeText.setText("Time: " + time);
-                    heartsText.setText("Hearts: " + playerHearts);
                 }
             }
         }.start();
 
         //Spawning balls timer
-        new CountUpTimer(1000) {
+        new CountUpTimer(timeBetweenBalls) {
             public void onTick(long elapsedTime) {
                 if(!gameOver) {
                     if(!waiting) {
-
-                        new CountDownTimer(timeBetweenBalls , 1000) {
+                        new CountDownTimer(timeBetweenBalls , 10) {
                             @Override
                             public void onTick(long l) {
                                 waiting = true;
@@ -191,32 +205,52 @@ public class PlayScreen extends AppCompatActivity {
         //Speed increase timer
         new CountUpTimer(5000) {
             public void onTick(long elapsedTime) {
-                speed++;
+                if(speed <= 50)
+                    speed += 3;
+                if(timeBetweenBalls >= 70)
+                    timeBetweenBalls -= 70;
             }
         }.start();
     }
 
     public void popUp(){
         gameOver = true;
+        final DBHandler db = new DBHandler(this);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         final EditText et = new EditText(this);
-
+        int maxLength = 3;
+        et.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(et);
 
         // set dialog message
-        alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setCancelable(false).setPositiveButton("Submit Name", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+
+                String name = et.getText().toString();
+                int nID = db.getPlayerMaxID();
+                if(name.length() != 0) {
+                    db.addPlayer(new Player(nID, score, name));
+                    makeToast("Score Submitted!");
+                }
+                else
+                {
+                    makeToast("Failed to submit. Invalid input.");
+                }
+                onBackPressed();
             }
         });
-
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
         // show it
         alertDialog.show();
     }
 
+    public void makeToast(String toasty){
+        Toast.makeText(this, toasty,
+                Toast.LENGTH_LONG).show();
+    }
     public void updateScore(){
         TextView scoreText = (TextView)findViewById(R.id.scoreText);
         scoreText.setText("Score: " + score);
@@ -245,6 +279,7 @@ public class PlayScreen extends AppCompatActivity {
         TextView debugText = (TextView)findViewById(R.id.debugInfo);
         debugText.setText(" ");
 
+        /*
         debugText.setText("Ball 1 " + ballImageViewsActive.get(0) + " " + ballImageViews.get(0).getY() +
                 "\nBall 2 " + ballImageViewsActive.get(1) + " " + ballImageViews.get(1).getY() +
                 "\nBall 3 " + ballImageViewsActive.get(2) + " " + ballImageViews.get(2).getY() +
@@ -260,8 +295,8 @@ public class PlayScreen extends AppCompatActivity {
                 "\nBall 13 " + ballImageViewsActive.get(12) + " " + ballImageViews.get(12).getY() +
                 "\nBall 14 " + ballImageViewsActive.get(13) + " " + ballImageViews.get(13).getY() +
                 "\nBall 15 " + ballImageViewsActive.get(14) + " " + ballImageViews.get(14).getY() +
-                "\nSpeed: " + speed + "\nCurrent ball: " + (currentBall+1));
-
+                "\nSpeed: " + speed + "\nCurrent ball: " + (currentBall+1) + "\n timeBetweenBalls: " + timeBetweenBalls);
+        */
         for (int i = 0; i < ballImageViews.size(); i++) {
             if (ballImageViewsActive.get(i)) {
                 ballImageViews.get(i).setY(ballImageViews.get(i).getY() + speed);
@@ -274,6 +309,8 @@ public class PlayScreen extends AppCompatActivity {
                 ballImageViews.get(i).setY(0xffffff38);
         }
 
+        TextView heartsText = (TextView)findViewById(R.id.heartstext);
+        heartsText.setText("Hearts: " + playerHearts);
         if (playerHearts <= 0) {
             playerHearts = 0;
             gameOver = true;
@@ -286,6 +323,26 @@ public class PlayScreen extends AppCompatActivity {
         super.onBackPressed();
         this.finish();
         gameOver = true;
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        if(backgroundMusic.isPlaying())
+            backgroundMusic.stop();
+        else
+            return;
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        if(backgroundMusic.isPlaying())
+            backgroundMusic.stop();
+        else
+            return;
     }
 
 }

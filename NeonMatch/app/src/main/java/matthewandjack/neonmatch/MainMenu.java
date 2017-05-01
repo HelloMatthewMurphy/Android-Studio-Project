@@ -1,19 +1,33 @@
 package matthewandjack.neonmatch;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.List;
 
+/**
+ *
+ */
+
 public class MainMenu extends AppCompatActivity {
+
+    private MediaPlayer backgroundMusic;
+    private boolean mute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +37,12 @@ public class MainMenu extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main_menu);
 
-        final MediaPlayer backgroundMusic = MediaPlayer.create(this, R.raw.backgroundmusic);
-        backgroundMusic.start();
-        backgroundMusic.setLooping(true);
+        backgroundMusic = MediaPlayer.create(this, R.raw.backgroundmusic);
+        mute = ((MyApplication) this.getApplication()).getMute();
+        if (!mute) {
+            backgroundMusic.start();
+            backgroundMusic.setLooping(true);
+        }
     }
 
     public void openPlayActivity(View view) {
@@ -49,7 +66,6 @@ public class MainMenu extends AppCompatActivity {
             db.addPlayer(new Player(9, 660, "KUL"));
             db.addPlayer(new Player(10, 420, "DAN"));
         }
-        //Reading all shops
         List<Player> players = db.getAllPlayers();
 
         String result = "";
@@ -69,6 +85,71 @@ public class MainMenu extends AppCompatActivity {
     }
 
     public void exitApp(View view) {
-        System.exit(0);
+        this.finish();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    public void soundToggle(View v)
+    {
+        ImageButton sound = (ImageButton) findViewById(R.id.sound);
+        if(!mute){
+            sound.setImageResource(R.drawable.soundoff);
+            ((MyApplication) this.getApplication()).setMute(true);
+            mute = ((MyApplication) this.getApplication()).getMute();
+        }
+        else{
+            sound.setImageResource(R.drawable.soundon);
+            ((MyApplication) this.getApplication()).setMute(false);
+            mute = ((MyApplication) this.getApplication()).getMute();
+        }
+        updateMusic();
+    }
+
+    private void updateMusic(){
+        if(!mute){
+            backgroundMusic.start();
+            backgroundMusic.setLooping(true);
+        }
+        else
+            backgroundMusic.pause();
+    }
+
+    public void watchYoutubeVideo(View view){
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:va67yTSMkFU"));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=va67yTSMkFU"));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(backgroundMusic.isPlaying())
+            backgroundMusic.stop();
+        else
+            return;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!backgroundMusic.isPlaying() && !mute)
+            backgroundMusic.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(backgroundMusic.isPlaying())
+            backgroundMusic.stop();
+        else
+            return;
     }
 }

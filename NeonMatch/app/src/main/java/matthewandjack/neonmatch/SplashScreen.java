@@ -8,12 +8,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 /**
  * Created by user on 28/04/2017.
  */
 
 public class SplashScreen extends AppCompatActivity {
+
+    private boolean movingDown = true;
+    private ImageView text;
+    private float startY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +35,27 @@ public class SplashScreen extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        text = (ImageView)findViewById(R.id.text);
+        startY = text.getY();
+
+        textBounce();
     }
 
-    public void tapped(){
+    private void textBounce() {
+        new CountUpTimer(33) {
+            public void onTick(long elapsedTime) {
+                if(movingDown) {
+                    text.setY(text.getY() + 4);
+                    if(text.getY() >= 500)
+                        movingDown = false;
+                }
+                else {
+                    text.setY(text.getY() - 4);
+                    if(text.getY() <= 400)
+                        movingDown = true;
+                }
+            }
+        }.start();
+
     }
 }

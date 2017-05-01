@@ -14,8 +14,8 @@
 
     <ImageButton
         android:id="@+id/greenButton"
-        android:layout_width="122dp"
-        android:layout_height="193dp"
+        android:layout_width="134dp"
+        android:layout_height="198dp"
         android:onClick="greenPressed"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,8 +23,8 @@
 
     <ImageButton
         android:id="@+id/yellowButton"
-        android:layout_width="122dp"
-        android:layout_height="193dp"
+        android:layout_width="134dp"
+        android:layout_height="198dp"
         android:layout_weight="0.23"
         android:onClick="yellowPressed"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,8 +33,8 @@
 
     <ImageButton
         android:id="@+id/blueButton"
-        android:layout_width="122dp"
-        android:layout_height="193dp"
+        android:layout_width="134dp"
+        android:layout_height="198dp"
         android:onClick="bluePressed"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,11 +42,13 @@
 
     <ImageButton
         android:id="@+id/redButton"
-        android:layout_width="122dp"
-        android:layout_height="193dp"
+        android:layout_width="134dp"
+        android:layout_height="198dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@null" />
+        android:background="@null"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp" />
 
     <TextView
         android:id="@+id/scoreText"
